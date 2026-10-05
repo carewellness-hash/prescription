@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription for Pippin 🩺</title>
+    <!-- Google Fonts for Medical/Modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #ff85a2;
+            --soft-pink: #fff0f5;
+            --rose-border: #f8c8d8;
+            --text-dark: #2b2b2b;
+            --text-muted: #666666;
+            --rx-red: #d93856;
+            --warning-bg: #fff5eb;
+            --warning-border: #ffd8b1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f7eef2;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Paper Sheet Style */
+        .rx-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.05);
+            border: 2px solid var(--rose-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle Rx Watermark */
+        .rx-card::before {
+            content: "Rx";
+            position: absolute;
+            right: 40px;
+            bottom: 60px;
+            font-family: 'Playfair Display', serif;
+            font-size: 280px;
+            font-weight: 700;
+            color: rgba(255, 133, 162, 0.04);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Header Section */
+        .clinic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--rose-border);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .clinic-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--rx-red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clinic-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .rx-symbol {
+            font-family: 'Playfair Display', serif;
+            font-size: 54px;
+            font-style: italic;
+            font-weight: bold;
+            color: var(--rx-red);
+            line-height: 1;
+        }
+
+        /* Patient Info Box */
+        .patient-info {
+            background-color: var(--soft-pink);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            border: 1px solid var(--rose-border);
+        }
+
+        .info-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            color: var(--rx-red);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-group span {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--rx-red);
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 6px;
+        }
+
+        /* Prescription Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th {
+            background-color: #fafafa;
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 2px solid #eeeeee;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background-color: #fffcfd;
+        }
+
+        .dosage-badge {
+            background-color: #f1f3f5;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .zero-mg {
+            color: #d93856;
+            font-weight: 600;
+        }
+
+        /* Doctor Notes Section */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .note-card {
+            background: #ffffff;
+            border: 1px solid var(--rose-border);
+            border-left: 4px solid var(--primary-pink);
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .note-card h4 {
+            font-size: 14px;
+            color: var(--rx-red);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .note-card p {
+            font-size: 13px;
+            color: #4a4a4a;
+            line-height: 1.5;
+        }
+
+        /* Warning Box */
+        .contra-box {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 25px;
+        }
+
+        .contra-box h4 {
+            color: #d97706;
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contra-box p {
+            font-size: 13px;
+            color: #7c2d12;
+            line-height: 1.5;
+        }
+
+        /* Hand-written Heartfelt Notes */
+        .personal-note {
+            background-color: #fffafd;
+            border: 2px dashed var(--rose-border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            position: relative;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .handwritten p {
+            margin-bottom: 12px;
+        }
+
+        .rx-seal {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .signature {
+            text-align: right;
+        }
+
+        .signature-line {
+            font-family: 'Caveat', cursive;
+            font-size: 28px;
+            color: var(--rx-red);
+            margin-top: 5px;
+        }
+
+        /* Actions / Buttons */
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-print {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 133, 162, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            background-color: #f06585;
+            transform: translateY(-1px);
+        }
+
+        /* Hide print button on PDF/Paper print */
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .rx-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .actions {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .rx-card {
+                padding: 20px;
+            }
+            .patient-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rx-card">
+        <!-- Clinic Header -->
+        <div class="clinic-header">
+            <div class="clinic-info">
+                <h1>Care & Wellness Clinic 🤍</h1>
+                <p>Specialized Intensive Care for Pippin</p>
+                <p>Department of Infinite Love & Healing</p>
+            </div>
+            <div class="rx-symbol">Rx</div>
+        </div>
+
+        <!-- Patient Information -->
+        <div class="patient-info">
+            <div class="info-group">
+                <label>Patient Name</label>
+                <span>Pippin 🩺</span>
+            </div>
+            <div class="info-group">
+                <label>Diagnosis</label>
+                <span>Fever, sickness, body pain, getting hurt & one very bad exam day 🥺</span>
+            </div>
+        </div>
+
+        <!-- Prescription Table -->
+        <div class="section-title">
+            <span>📋</span> Prescribed Medication & Care
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Prescription</th>
+                        <th>Dosage</th>
+                        <th>Frequency (M-A-N)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Proper Food 🍚</td>
+                        <td>1 plate</td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Water 💧</td>
+                        <td>1 glass</td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Prescribed Medicines 💊</td>
+                        <td>As directed</td>
+                        <td><span class="dosage-badge">1 × 0 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Proper Sleep 💤</td>
+                        <td>1 full dose</td>
+                        <td><span class="dosage-badge">0 × 0 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Rest 🛏️</td>
+                        <td>As required</td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Something Nutritious 🍎</td>
+                        <td>1 serving</td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Stress 🚫</td>
+                        <td><span class="zero-mg">0 mg</span></td>
+                        <td><span class="dosage-badge">0 × 0 × 0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Overthinking Exam 🚫</td>
+                        <td><span class="zero-mg">0 mg</span></td>
+                        <td><span class="dosage-badge">0 × 0 × 0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Listen to Doctor 👩🏻‍⚕️</td>
+                        <td>1 dose</td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                    <tr>
+                        <td>Being Mean to Yourself 🚫</td>
+                        <td><span class="zero-mg">0 mg</span></td>
+                        <td><span class="dosage-badge">0 × 0 × 0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Love & Care 🤍</td>
+                        <td><strong>Unlimited</strong></td>
+                        <td><span class="dosage-badge">1 × 1 × 1</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Doctor's Notes -->
+        <div class="section-title">
+            <span>🩷</span> Doctor's Special Directions
+        </div>
+
+        <div class="notes-grid">
+            <div class="note-card">
+                <h4>💫 For Fainting</h4>
+                <p>Rest properly, eat properly, and don't ignore it. Tell your parents and let them know what happened.</p>
+            </div>
+            <div class="note-card">
+                <h4>🦵 For Muscle Pain</h4>
+                <p>Think about whether you've done anything physically tiring recently, or if it's connected to fever/unwellness.</p>
+            </div>
+            <div class="note-card">
+                <h4>🩹 For the Stomach</h4>
+                <p>Don't ignore it either. Keep an eye on it and inform your parents if it continues or gets worse.</p>
+            </div>
+            <div class="note-card">
+                <h4>🩺 For That Cut</h4>
+                <p>Keep it clean and covered. If it's deep or needs proper medical attention, please get it checked.</p>
+            </div>
+            <div class="note-card">
+                <h4>💊 For Medicines</h4>
+                <p>Take what you're supposed to take. No trying to avoid them. 😭</p>
+            </div>
+        </div>
+
+        <!-- Contraindications -->
+        <div class="contra-box">
+            <h4>⚠️ Contraindications / Warning</h4>
+            <p><strong>Bad Exam Results:</strong> May cause unnecessary sadness and overthinking.</p>
+            <p style="margin-top: 6px;"><strong>Treatment:</strong> Remember that sometimes an exam just goes badly. It's completely alright. It does not make you any less capable!</p>
+        </div>
+
+        <!-- Final Notes Section -->
+        <div class="personal-note">
+            <div class="handwritten">
+                <p>I know my baby got hurt. 🥺</p>
+                <p>Pain, pain go away... DON'T come again another day!</p>
+                <p>And sick also... 🥺 Nothing will happen, okie? I'm praying that you become fine soon.</p>
+                <p>And please don't be sad at all because of the exam, okayie? It happens sometimes na. It's alright.</p>
+                <p>I love you. I am very proud of you.</p>
+                <p>Please get better soon, because I want you to know you are loved and enough. 🤍</p>
+            </div>
+
+            <div class="rx-seal">
+                <div style="font-size: 12px; color: var(--text-muted);">
+                    Refills: Unlimited<br>
+                    Valid: Forever
+                </div>
+                <div class="signature">
+                    <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Attending Doctor</span>
+                    <div class="signature-line">Your Doctor 👩🏻‍⚕️🤍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn-print" onclick="window.print()">🖨️ Print / Save Prescription</button>
+        </div>
+    </div>
+
+</body>
+</html>
